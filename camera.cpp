@@ -14,6 +14,8 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -29,6 +31,12 @@ glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
+
+bool firstMouse = true;
+float lastX = 400, lastY = 300;
+float pitch = 0.0f;
+float yaw = -90.0f;
+float fov = 45.0f;
 
 int main()
 {
@@ -53,7 +61,11 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(window);
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -193,17 +205,14 @@ int main()
     // // note that we're translating the scene in the reverse direction of where we want to move
     // view = glm::translate(view, glm::vec3(0.0f, 0.0f, viewZoom));
 
-    glm::mat4 projection;
-    projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
-
     unsigned int modelLoc = glGetUniformLocation(ourShader.ID, "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
     //unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
     //glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-    unsigned int projectionLoc = glGetUniformLocation(ourShader.ID, "projection");
-    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+    // unsigned int projectionLoc = glGetUniformLocation(ourShader.ID, "projection");
+    // glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
     glm::vec3 cubePositions[] = {
       glm::vec3( 0.0f,  0.0f,  0.0f),
@@ -257,6 +266,10 @@ int main()
         glm::mat4 view;
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         ourShader.setMat4("view", view);
+
+        glm::mat4 projection;
+        projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
+        ourShader.setMat4("projection", projection);
 
         // model = glm::mat4();
         // model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
@@ -344,4 +357,44 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos){
+    if(firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos;
+    lastX = xpos;
+    lastY = ypos;
+
+    float sensitivity = 0.05;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    yaw   += xoffset;
+    pitch += yoffset;
+
+    if(pitch > 89.0f)
+        pitch = 89.0f;
+    if(pitch < -89.0f)
+        pitch = -89.0f;
+
+    glm::vec3 front;
+    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.y = sin(glm::radians(pitch));
+    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    cameraFront = glm::normalize(front);
+}
+
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+  if(fov >= 1.0f && fov <= 103.0f) fov -= yoffset;
+  if(fov <= 1.0f)                  fov = 1.0f;
+  if(fov >= 103.0f)                fov = 103.0f;
 }
