@@ -80,7 +80,7 @@ int main()
 
     // build and compile our shader zprogram
     // ------------------------------------
-    Shader lightingShader("shaders/lighting-maps.vsh", "shaders/lighting-maps.fsh");
+    Shader lightingShader("shaders/lighting-casting.vsh", "shaders/lighting-casting.fsh");
     Shader lampShader("shaders/lamp-material.vsh", "shaders/lamp-material.fsh");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
@@ -167,6 +167,8 @@ int main()
     lightingShader.setInt("material.diffuse", 0);
     lightingShader.setInt("material.specular", 1);
     lightingShader.setInt("material.emission", 2);
+
+    lightingShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f); 	
 
     glm::vec3 cubePositions[] = {
       glm::vec3( 0.0f,  0.0f,  0.0f),
