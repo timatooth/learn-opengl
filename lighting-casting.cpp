@@ -168,7 +168,10 @@ int main()
     lightingShader.setInt("material.specular", 1);
     lightingShader.setInt("material.emission", 2);
 
-    lightingShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f); 	
+    //lightingShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
+    lightingShader.setFloat("light.constant",  1.0f);
+    lightingShader.setFloat("light.linear",    0.09f);
+    lightingShader.setFloat("light.quadratic", 0.032f);
 
     glm::vec3 cubePositions[] = {
       glm::vec3( 0.0f,  0.0f,  0.0f),
