@@ -79,11 +79,12 @@ int main()
     // load models
     // -----------
     //Model ourModel("models/nanosuit/nanosuit.obj");
-    Model ourModel("models/sillything/sillything.obj");
+    Model sillyModel("models/sillything/sillything.blend");
+    Model ourModel("models/trogdor/trogdor.obj");
 
 
     // draw in wireframe
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // render loop
     // -----------
@@ -113,11 +114,18 @@ int main()
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
-        // render the loaded model
+        // render the silly model
         glm::mat4 model;
-        model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
+        model = glm::translate(model, glm::vec3(4.0f, 0.75f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
         ourShader.setMat4("model", model);
+        sillyModel.Draw(ourShader);
+
+        // TROGDOR!!
+        glm::mat4 model2;
+        model = glm::translate(model2, glm::vec3(2.0f, 0.75f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+        ourShader.setMat4("model", model2);
         ourModel.Draw(ourShader);
 
 
