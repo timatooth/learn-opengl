@@ -1,5 +1,3 @@
-
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #define STB_IMAGE_IMPLEMENTATION
@@ -82,7 +80,7 @@ int main()
     // build and compile our shader zprogram
     // ------------------------------------
     Shader lightingShader("shaders/multi-lights.vsh", "shaders/multi-lights.fsh");
-    Shader lampShader("6.lamp.vs", "6.lamp.fs");
+    Shader lampShader("shaders/lamp-material.vsh", "shaders/lamp-material.fsh");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
