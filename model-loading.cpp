@@ -82,6 +82,8 @@ int main()
     Model sillyModel("models/sillything/sillything.blend");
     Model ourModel("models/trogdor/trogdor.obj");
 
+    Model teapotModel("models/teapot/teapot.obj");
+
 
     // draw in wireframe
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -127,6 +129,13 @@ int main()
         model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
         ourShader.setMat4("model", model2);
         ourModel.Draw(ourShader);
+
+        // teapot!!
+        glm::mat4 teapotmat;
+        teapotmat = glm::translate(teapotmat, glm::vec3(2.0f, 10.0f, 0.0f));
+        teapotmat = glm::scale(teapotmat, glm::vec3(0.2f, 0.2f, 0.2f));
+        ourShader.setMat4("model", teapotmat);
+        teapotModel.Draw(ourShader);
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
